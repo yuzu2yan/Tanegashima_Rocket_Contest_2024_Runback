@@ -8,7 +8,9 @@
 """""""""""""""""""""""""""""""""""
 
 
-import GYSFDMAXB
+import sys
+sys.path.append('./sensors')
+import gnss
 import motor
 import ground
 import floating

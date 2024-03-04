@@ -1,3 +1,6 @@
+import sys
+sys.path.append('./../sensors')
+sys.path.append('./../ground')
 import bme280
 import time
 import motor

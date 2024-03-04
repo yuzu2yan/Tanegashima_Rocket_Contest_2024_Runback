@@ -1,5 +1,9 @@
+import sys
+sys.path.append('./../sensors')
+sys.path.append('./../sensors')
+sys.path.append('./../ground')
 import bno055
-import ground.gnss as gnss
+import gnss
 from geographiclib.geodesic import Geodesic 
 import math
 import time
