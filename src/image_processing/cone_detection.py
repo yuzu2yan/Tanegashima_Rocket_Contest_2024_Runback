@@ -38,19 +38,21 @@ def append_objs_to_img(img, inference_size, cones, labels):
     scale_x, scale_y = width / inference_size[0], height / inference_size[1]
         
     # 最も信頼度の高いオブジェクトを見つける
-    highest_confidence_cone = max(cones, key=lambda x: x.score)
-    bbox = highest_confidence_cone.bbox.scale(scale_x, scale_y)
-    x0, y0 = int(bbox.xmin), int(bbox.ymin)
-    x1, y1 = int(bbox.xmax), int(bbox.ymax)
-    center_x, center_y = int((x0 + x1) / 2), int((y0 + y1) / 2)
-    
-    percent = int(100 * highest_confidence_cone.score)
-    label = '{}% {}'.format(percent, labels.get(highest_confidence_cone.id, highest_confidence_cone.id))
-
-    img = cv2.rectangle(img, (x0, y0), (x1, y1), (0, 255, 0), 2)
-    img = cv2.putText(img, label, (x0, y0+30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 2)
+    if len(cones) != 0:
+        highest_confidence_cone = max(cones, key=lambda x: x.score)
+        bbox = highest_confidence_cone.bbox.scale(scale_x, scale_y)
+        x0, y0 = int(bbox.xmin), int(bbox.ymin)
+        x1, y1 = int(bbox.xmax), int(bbox.ymax)
+        center_x, center_y = int((x0 + x1) / 2), int((y0 + y1) / 2)
         
-    return img, center_x, center_y, percent
+        percent = int(100 * highest_confidence_cone.score)
+        label = '{}% {}'.format(percent, labels.get(highest_confidence_cone.id, highest_confidence_cone.id))
+
+        img = cv2.rectangle(img, (x0, y0), (x1, y1), (0, 255, 0), 2)
+        img = cv2.putText(img, label, (x0, y0+30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 2)
+        return img, center_x, center_y, percent
+    else:
+        return img, 0, 0, 0
 
 if __name__ == '__main__':
     # while True:
