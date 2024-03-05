@@ -14,6 +14,9 @@ def detect_cone():
     if cap.isOpened():
         ret, frame = cap.read()
         img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    else:
+        print("Error opening video stream or file")
+        return 0, 0, 0
 
     interpreter = make_interpreter('../../model/red_cone.tflite')
     interpreter.allocate_tensors()
@@ -24,8 +27,9 @@ def detect_cone():
     cones = get_objects(interpreter, 0.1)[:1] # set threshold
     detected_img, x, y, percent = append_objs_to_img(img_rgb, inference_size, cones, labels)
     
-    # cv2.imshow('frame', detected_img)
+    cv2.imshow('frame', detected_img)
     cv2.imwrite('detected_img.jpg', detected_img)
+    print(detected_img.shape)
     # height, width, channels = detected_img.shape
     print("x : ", x, "y : ", y, "percent : ", percent)
     cap.release()
@@ -55,7 +59,7 @@ def append_objs_to_img(img, inference_size, cones, labels):
         return img, 0, 0, 0
 
 if __name__ == '__main__':
-    # while True:
-    detect_cone()
+    while True:
+        detect_cone()
 
         
