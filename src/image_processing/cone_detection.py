@@ -30,7 +30,6 @@ def detect_cone():
     
     cv2.imshow('frame', detected_img)
     cv2.imwrite('detected_img.jpg', detected_img) # 300x300
-    print("percent : ", percent)
     cap.release()
     # cv2.destroyAllWindows()
     if len(cones) != 0 and percent > 30:
@@ -64,6 +63,7 @@ def append_objs_to_img(img, inference_size, cones, labels):
 
 if __name__ == '__main__':
     while True:
-        central_x, central_y, percent = detect_cone()
+        percent, distance = detect_cone()
+        print("percent:", percent, "distance:", distance)
 
         
