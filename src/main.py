@@ -148,20 +148,23 @@ while not reach_goal:
     while gnss.read_GPSData() == [0,0]:
             print("Waiting for GPS reception")
             time.sleep(5)
-    gps = gnss.read_GPSData()
-    data = ground.is_heading_goal(gps, des)
-    distance = ground.cal_distance(gps[0], gps[1], des[0], des[1])
-    print("distance : ", distance)
-    ground_log.ground_logger(data, distance)
     while phase == 2:
+        gps = gnss.read_GPSData()
+        data = ground.is_heading_goal(gps, des)
+        distance = ground.cal_distance(gps[0], gps[1], des[0], des[1])
+        print("distance : ", distance)
+        ground_log.ground_logger(data, distance)
         # Goal judgment
-        if distance <= 8 and error_img_proc == False: # Reach the goal within 8m
+        if distance <= 13 # Reach the goal within 13m
             print("Close to the goal")
             drive.stop()
             ground_log.end_of_ground_phase()
             phase = 3
             break
+        count = 0
         while data[3] != True: # Not heading the goal
+            if count > 7:
+                break
             # Check the stack and position when there are many position adjustments
             if data[4] == 'Turn Right':
                 drive.turn_right()
@@ -174,22 +177,9 @@ while not reach_goal:
             print("distance : ", distance)
             data = ground.is_heading_goal(gps, des, pre_gps)
             ground_log.ground_logger(data, distance, pre_gps, diff_distance)
+            count += 1
         # End of Orientation Correction
-        # Goal judgment again
-        if distance <= 8 and error_img_proc == False: # Reach the goal within 8m
-            print("Close to the goal")
-            drive.stop()
-            ground_log.end_of_ground_phase()
-            phase = 3
-            break
-        # Move towards the goal for 3 seconds
         drive.forward()
-        time.sleep(3)
-        gps = gnss.read_GPSData()
-        data = ground.is_heading_goal(gps, des)
-        distance = ground.cal_distance(gps[0], gps[1], des[0], des[1])
-        print("distance : ", distance)
-        ground_log.ground_logger(data, distance)
 
             
     """

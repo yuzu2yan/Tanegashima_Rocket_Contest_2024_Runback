@@ -3,10 +3,10 @@ import time
 import numpy as np
 
 # pigpio library : https://abyz.me.uk/rpi/pigpio/python.html
-FRONT = [17, 23] # Left, Right
-REAR = [27, 24] # Left, Right
-SEPA_FIN = 16
-SEPA_RIN = 20
+FRONT = [10, 24] # Left, Right
+REAR = [17, 23] # Left, Right
+SEPA_FIN = 11
+SEPA_RIN = 16
 PINS = FRONT + REAR + [SEPA_FIN, SEPA_RIN]
 
 class Motor(object):
