@@ -17,21 +17,16 @@ def process_frame(depth_buf: np.ndarray, amplitude_buf: np.ndarray) -> np.ndarra
     depth_buf = np.clip(depth_buf, 0, 255)
     result_frame = depth_buf.astype(np.uint8)  & amplitude_buf.astype(np.uint8)
     return result_frame 
-
-class ConePose():
-    def __init__(self) -> None:
-        self.start_x = 0
-        self.start_y = 0
-        self.end_x = 0
-        self.end_y = 0
         
 def usage(argv0):
     print("Usage: python "+argv0+" [options]")
     print("Available options are:")
     print(" -d        Choose the video to use")
 
-def cal_distance_to_cone(x, y):
+def cal_distance_to_cone(x, y, shape):
     distance = 100
+    x = int(x * 240 / shape[1])
+    y = int(y * 180 / shape[0])
     start_x = x - 4 if x - 4 > 0 else 0
     start_y = y - 4 if y - 4 > 0 else 0
     end_x = x + 4 if x + 4 < 240 else 240
