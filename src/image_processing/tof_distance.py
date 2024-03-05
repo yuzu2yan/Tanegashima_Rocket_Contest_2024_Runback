@@ -51,7 +51,7 @@ def cal_distance_to_cone(x, y, shape):
         # cv2.imshow("preview_amplitude", amplitude_buf.astype(np.uint8))
         # cv2.imwrite('amplitude.jpg', amplitude_buf.astype(np.uint8))
         distance = np.mean(depth_buf[start_y:end_y,start_x:end_x])
-        print("distance to cone:",distance)
+        # print("distance to cone:",distance)
         result_image = process_frame(depth_buf,amplitude_buf)
         result_image = cv2.applyColorMap(result_image, cv2.COLORMAP_JET)
         cv2.rectangle(result_image,(start_x,start_y),(end_x,end_y),(128,128,128), 1)

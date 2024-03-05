@@ -14,7 +14,6 @@ def detect_cone():
     cap = cv2.VideoCapture(1) # /dev/video1
     if cap.isOpened():
         ret, frame = cap.read()
-        print(frame.shape)
         img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     else:
         print("Error opening video stream or file")
@@ -28,7 +27,7 @@ def detect_cone():
     cones = get_objects(interpreter, 0.1)[:1] # set threshold
     detected_img, central_x, central_y, percent = append_objs_to_img(img_rgb, inference_size, cones, labels)
     
-    cv2.imshow('frame', detected_img)
+    # cv2.imshow('frame', detected_img)
     cv2.imwrite('detected_img.jpg', detected_img) # 300x300
     cap.release()
     # cv2.destroyAllWindows()
@@ -62,8 +61,7 @@ def append_objs_to_img(img, inference_size, cones, labels):
         return img, 0, 0, 0
 
 if __name__ == '__main__':
-    while True:
-        percent, distance = detect_cone()
-        print("percent:", percent, "distance:", distance)
+    percent, distance = detect_cone()
+    print("percent:", percent, "distance:", distance)
 
         
