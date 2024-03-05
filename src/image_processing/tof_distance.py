@@ -60,7 +60,7 @@ def cal_distance_to_cone(x, y, shape):
         cv2.imwrite('result.jpg', result_image)
         cam.stop()
         cam.close()
-        sys.exit(0)
+        # sys.exit(0)
     return distance
 
 
