@@ -35,33 +35,29 @@ def cal_distance(x1, y1, x2, y2):
     distance = Geodesic.WGS84.Inverse(y1, x1, y2, x2)['s12'] # [m]
     return distance
 
-def cal_heading_ang(pre_gps, gps, err_mag):
-    if err_mag != True:
-        try:
-            data = bno055.read_Mag_AccelData()
-            """
-            data = [magX, magY, magZ, accelX, accelY, accelZ, accel, calib_mag, calib_accel]
-            """
-            hearding_ang = np.degrees(np.arctan2(data[1], data[0]))
-            if hearding_ang < 0:
-                hearding_ang += 360
-            return hearding_ang, data
-        except Exception as e:
-            print("Error : Can't read Mag data")
-            with open('sys_error.csv', 'a') as f:
-                now = datetime.datetime.now()
-                writer = csv.writer(f)
-                writer.writerow([now.strftime('%H:%M:%S'), "Can't read Mag data", str(e)])
-                f.close()
-            return 0, [0, 0, 0, 0, 0, 0, 0, 0, 0]
-    else:
+def cal_heading_ang():
+    try:
         data = bno055.read_Mag_AccelData()
-        return cal_azimuth(pre_gps[0], pre_gps[1], gps[0], gps[1]), data
+        """
+        data = [magX, magY, magZ, accelX, accelY, accelZ, accel, calib_mag, calib_accel]
+        """
+        hearding_ang = np.degrees(np.arctan2(data[1], data[0]))
+        if hearding_ang < 0:
+            hearding_ang += 360
+        return hearding_ang, data
+    except Exception as e:
+        print("Error : Can't read Mag data")
+        with open('sys_error.csv', 'a') as f:
+            now = datetime.datetime.now()
+            writer = csv.writer(f)
+            writer.writerow([now.strftime('%H:%M:%S'), "Can't read Mag data", str(e)])
+            f.close()
+        return 0, [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-def is_heading_goal(gps, des, pre_gps=[0,0], err_mag=False):
+def is_heading_goal(gps, des):
     des_ang = cal_azimuth(gps[0], gps[1], des[0], des[1])
     print("des_ang : ", des_ang)
-    heading_ang, data = cal_heading_ang(pre_gps, gps, err_mag)
+    heading_ang, data = cal_heading_ang()
     print("heading_ang : ", heading_ang)
     ang_diff = abs(des_ang - heading_ang)
     if ang_diff < 15 or 335 < ang_diff:
@@ -71,14 +67,6 @@ def is_heading_goal(gps, des, pre_gps=[0,0], err_mag=False):
             return [des_ang, heading_ang, ang_diff, False, "Turn Left"] + gps + data
         else:
             return [des_ang, heading_ang, ang_diff, False, "Turn Right"] + gps + data
-
-def is_stuck(pre_gps, gps, accel):
-    diff_distance = cal_distance(pre_gps[0], pre_gps[1], gps[0], gps[1])
-    # Changed to judgment of stuck by acceleration instead of displacement of position
-    if accel >= 8:
-        return True, diff_distance
-    else:
-        return False, diff_distance
 
 # Test destination point(lon, lat)
 TEST_DESTINATION = [139.65490166666666, 35.950921666666666]
@@ -101,9 +89,7 @@ if __name__ == '__main__':
             time.sleep(2.2)
         else:
             if data[4] == 'Turn Right':
-                print("Turn right")
                 drive.turn_right()
             elif data[4] == 'Turn Left':
-                print("Turn left")
                 drive.turn_left()
         time.sleep(0.8)

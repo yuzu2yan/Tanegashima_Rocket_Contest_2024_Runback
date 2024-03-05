@@ -4,7 +4,7 @@ import numpy as np
 import ArducamDepthCamera as ac
 
 
-MAX_DISTANCE = 5
+MAX_DISTANCE = 4
 
 def process_frame(depth_buf: np.ndarray, amplitude_buf: np.ndarray) -> np.ndarray:
         
@@ -30,7 +30,8 @@ def usage(argv0):
     print("Available options are:")
     print(" -d        Choose the video to use")
 
-def cal_distance2cone(x, y):
+def cal_distance_to_cone(x, y):
+    distance = 100
     start_x = x - 4 if x - 4 > 0 else 0
     start_y = y - 4 if y - 4 > 0 else 0
     end_x = x + 4 if x + 4 < 240 else 240
@@ -52,25 +53,23 @@ def cal_distance2cone(x, y):
         amplitude_buf*=(255/1024)
         amplitude_buf = np.clip(amplitude_buf, 0, 255)
 
-        cv2.imshow("preview_amplitude", amplitude_buf.astype(np.uint8))
-        distance = 
-        print("distance to cone:",np.mean(depth_buf[start_y:end_y,start_x:end_y]))
+        # cv2.imshow("preview_amplitude", amplitude_buf.astype(np.uint8))
+        # cv2.imwrite('amplitude.jpg', amplitude_buf.astype(np.uint8))
+        distance = np.mean(depth_buf[start_y:end_y,start_x:end_x])
+        print("distance to cone:",distance)
         result_image = process_frame(depth_buf,amplitude_buf)
         result_image = cv2.applyColorMap(result_image, cv2.COLORMAP_JET)
         cv2.rectangle(result_image,(start_x,start_y),(end_x,end_y),(128,128,128), 1)
         
-        cv2.imshow("preview",result_image)
-
-        key = cv2.waitKey(1)
-        if key == ord("q"):
-            exit_ = True
-            cam.stop()
-            cam.close()
-            sys.exit(0)
-    return 
+        # cv2.imshow("preview",result_image)
+        cv2.imwrite('result.jpg', result_image)
+        cam.stop()
+        cam.close()
+        sys.exit(0)
+    return distance
 
 
 if __name__ == "__main__":
-    x = 100
-    y = 100
-    cal_distance2cone(x,y)
+    x = 120
+    y = 90
+    print(cal_distance_to_cone(x,y))
