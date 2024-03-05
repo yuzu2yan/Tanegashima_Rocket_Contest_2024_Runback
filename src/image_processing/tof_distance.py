@@ -38,7 +38,7 @@ def cal_distance_to_cone(x, y, shape):
     if cam.start(ac.TOFOutput.DEPTH) != 0 :
         print("Failed to start camera")
     cam.setControl(ac.TOFControl.RANG,MAX_DISTANCE)
-    cv2.namedWindow("preview", cv2.WINDOW_AUTOSIZE)
+    # cv2.namedWindow("preview", cv2.WINDOW_AUTOSIZE)
 
     frame = cam.requestFrame(200)
     if frame != None:
