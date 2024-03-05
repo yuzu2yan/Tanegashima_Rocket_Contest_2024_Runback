@@ -14,7 +14,7 @@ def detect_cone():
     cap = cv2.VideoCapture(1) # /dev/video1
     if cap.isOpened():
         ret, frame = cap.read()
-        img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     else:
         print("Error opening video stream or file")
         return 0, 0, 0
@@ -22,16 +22,16 @@ def detect_cone():
     interpreter.allocate_tensors()
     labels = read_label_file('../../model/red_cone.txt')
     inference_size = input_size(interpreter)
-    img_rgb = cv2.resize(img_rgb, inference_size)
-    run_inference(interpreter, img_rgb.tobytes())
+    frame = cv2.resize(frame, inference_size)
+    run_inference(interpreter, frame.tobytes())
     cones = get_objects(interpreter, 0.1)[:1] # set threshold
-    detected_img, central_x, central_y, percent = append_objs_to_img(img_rgb, inference_size, cones, labels)
+    detected_img, central_x, central_y, percent = append_objs_to_img(frame, inference_size, cones, labels)
     
     # cv2.imshow('frame', detected_img)
     cv2.imwrite('detected_img.jpg', detected_img) # 300x300
     cap.release()
     # cv2.destroyAllWindows()
-    if len(cones) != 0 and percent > 30:
+    if len(cones) != 0 and percent > 10:
         distance = cal_distance_to_cone(central_x, central_y, detected_img.shape)
     else:
         distance = 100
