@@ -49,8 +49,8 @@ class Motor(object):
         print("parachute separated")
                 
     def attach_para(self):
-        Motor.pi.set_PWM_dutycycle(SEPA_FIN, 100) 
-        Motor.pi.set_PWM_dutycycle(SEPA_RIN, 0) 
+        Motor.pi.set_PWM_dutycycle(SEPA_FIN, 0) 
+        Motor.pi.set_PWM_dutycycle(SEPA_RIN, 100) 
         print("parachute attached")
         
 

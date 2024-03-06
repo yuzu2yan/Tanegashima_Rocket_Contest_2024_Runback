@@ -13,19 +13,27 @@ def detect_cone(cap, cam, inference_size, interpreter, labels):
     ret, frame = cap.read()
     if not ret:
         print('Cannot use camera1')
-        return 0
+        return 0, 0, (0, 0), 0
     frame = cv2.resize(frame, inference_size)
     run_inference(interpreter, frame.tobytes())
     cones = get_objects(interpreter, 0.1)[:1] # set threshold
     detected_img, central_x, central_y, area, percent = append_objs_to_img(frame, inference_size, cones, labels)
-    
+    shape = detected_img.shape
+    if central_x < shape[1] / 3:
+        loc = "left"
+    elif central_x > shape[1] * 2 / 3:
+        loc = "right"
+    elif area == 0 or percent < 15:
+        loc = "not found"
+    else:
+        loc = "center"
     cv2.imshow('frame', detected_img)
     cv2.imwrite('detected_img.jpg', detected_img) # 300x300
     if len(cones) != 0 and percent > 15:
         distance = cal_distance_to_cone(cam, central_x, central_y, detected_img.shape)
     else:
         distance = 100
-    return percent, distance, area
+    return percent, distance, loc, area
 
     
 def append_objs_to_img(img, inference_size, cones, labels):
@@ -64,11 +72,11 @@ if __name__ == '__main__':
         print("initialization failed")
     if cam.start(ac.TOFOutput.DEPTH) != 0 :
         print("Failed to start camera")
-    cam.setControl(ac.TOFControl.RANG, MAX_DISTANCE=4)
+    #cam.setControl(ac.TOFControl.RANG, MAX_DISTANCE=4)
     cv2.namedWindow("preview", cv2.WINDOW_AUTOSIZE)
     
     while cap.isOpened():
-        percent, distance = detect_cone(cap, cam, inference_size, interpreter, labels)
+        percent, distance, loc, area = detect_cone(cap, cam, inference_size, interpreter, labels)
         print("percent:", percent, "distance:", distance)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
