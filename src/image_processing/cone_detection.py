@@ -75,7 +75,7 @@ if __name__ == '__main__':
     cv2.namedWindow("preview", cv2.WINDOW_AUTOSIZE)
     
     while cap.isOpened():
-        percent, distance, loc = detect_cone(cap, cam, inference_size, interpreter, labels)
+        percent, distance, loc = detect_cone(cap, cam, inference_size, interpreter, labels, folder_path="./")
         print("percent:", percent, "distance:", distance, "location:", loc)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
