@@ -1,9 +1,7 @@
 import sys
 sys.path.append('./../sensors')
-sys.path.append('./../sensors')
-sys.path.append('./../ground')
-import bno055
-import gnss
+from sensors import bno055
+from sensors import gnss
 from geographiclib.geodesic import Geodesic 
 import math
 import time
@@ -11,6 +9,7 @@ import motor
 import numpy as np
 import datetime
 import csv
+import yaml
 
 
 def cal_azimuth(lng1, lat1, lng2, lat2):
@@ -68,28 +67,30 @@ def is_heading_goal(gps, des):
         else:
             return [des_ang, heading_ang, ang_diff, False, "Turn Right"] + gps + data
 
-# Test destination point(lon, lat)
-TEST_DESTINATION = [139.65490166666666, 35.950921666666666]
+# destination point(lon, lat)
+with open('settings.yaml') as yml:
+    settings = yaml.safe_load(yml)
+des = [settings['destination']['longitude'], settings['destination']['latitude']]
+
 
 if __name__ == '__main__':
     drive = motor.Motor()
     while True:
+        drive.forward()
         gps = gnss.read_GPSData()
-        distance = cal_distance(gps[0], gps[1], TEST_DESTINATION[0], TEST_DESTINATION[1])
+        distance = cal_distance(gps[0], gps[1], des[0], des[1])
         print("distance :", distance)
         if distance < 3:
             print("end")
             drive.stop()
             break
         time.sleep(0.2)
-        data = is_heading_goal(gps, TEST_DESTINATION)
+        data = is_heading_goal(gps, des)
         if data[3] == True:
             print("Heading Goal!!")
-            drive.forward()
-            time.sleep(2.2)
         else:
             if data[4] == 'Turn Right':
                 drive.turn_right()
             elif data[4] == 'Turn Left':
                 drive.turn_left()
-        time.sleep(0.8)
+        time.sleep(0.5)

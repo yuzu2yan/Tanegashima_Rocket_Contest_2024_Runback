@@ -57,29 +57,29 @@ class GroundLogger(object):
             writer = csv.writer(f)
             writer.writerow([now.strftime('%Y%m%d %H:%M:%S')])
             # calib status : 0 ~ 3
-            writer.writerow(['time', 'state', 'distance to goal', 'distance difference','destination angle', 'heading angle','angle difference', 'heading goal', 'direction', 'longtitude', 'latitude', 'magX', 'magY', 'magZ', 'accelX', 'accelY', 'accelZ', 'accel', 'calib status mag', 'calib status accel', 'pre longtitude', 'pre latitude', 'error geomagnetic sensor', 'error heading counter','description'])
+            writer.writerow(['time', 'state', 'distance to goal', 'distance difference','destination angle', 'heading angle','angle difference', 'heading goal', 'direction', 'longtitude', 'latitude', 'magX', 'magY', 'magZ', 'accelX', 'accelY', 'accelZ', 'accel', 'calib status mag', 'calib status accel'])
         f.close()
     
-    def ground_logger(self, data, distance, error_mag=False, error_heading=0, pre_gps=[0,0], diff_distance=0, description=''):
+    def ground_logger(self, data, distance):
         with open(GroundLogger.filename, 'a') as f:
             now = datetime.datetime.now()
             writer = csv.writer(f)
-            writer.writerow([now.strftime('%H:%M:%S'), self.state, distance, diff_distance] + data + pre_gps + [error_mag, error_heading, description])
+            writer.writerow([now.strftime('%H:%M:%S'), self.state, distance] + data)
 
-    def end_of_ground_phase(self, discription='Start Image Processing'):
+    def end_of_ground_phase(self):
         with open(GroundLogger.filename, 'a') as f:
             now = datetime.datetime.now()
             writer = csv.writer(f)
-            writer.writerow([now.strftime('%H:%M:%S'), self.state, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','', discription])
+            writer.writerow([now.strftime('%H:%M:%S'), 'Start Image Processing'])
         f.close()
         
 class ImgProcLogger(object):
     filename = ''
     """
-    cone location Front
-                  Right
-                  Left
-                  Not Found
+    cone location center
+                  right
+                  left
+                  not found
     """
     def __init__(self):
         now = datetime.datetime.now()
@@ -87,21 +87,21 @@ class ImgProcLogger(object):
         with open(ImgProcLogger.filename, 'w') as f:
             writer = csv.writer(f)
             writer.writerow([now.strftime('%Y%m%d %H:%M:%S')])
-            writer.writerow(['time', 'cone place', 'img name', 'processed img name', 'percentage of cone in img', 'Distance to goal', 'distance difference','longtitude', 'latitude', 'pre longtitude', 'pre latitude', 'discription'])
+            writer.writerow(['time', 'cone place', 'Distance to goal', 'percent', 'ditected img name', 'tof image name'])
         f.close()
         
-    def img_proc_logger(self, img_name, proc_img_name, cone_loc, p, distance, gps, pre_gps=[0,0], diff_distance=0,description=''):
+    def img_proc_logger(self, cone_place, distance, percent, ditected_img_name, tof_img_name):
         with open(ImgProcLogger.filename, 'a') as f:
             now = datetime.datetime.now()
             writer = csv.writer(f)
-            writer.writerow([now.strftime('%H:%M:%S'), cone_loc, img_name, proc_img_name, p, distance, diff_distance] + gps + pre_gps + [description])
+            writer.writerow([now.strftime('%H:%M:%S'), cone_place, distance, percent, ditected_img_name, tof_img_name])
         f.close()    
     
     def end_of_img_proc_phase(self):
         with open(ImgProcLogger.filename, 'a') as f:
             now = datetime.datetime.now()
             writer = csv.writer(f)
-            writer.writerow([now.strftime('%H:%M:%S'), '', '', '', '', '', '', '', '', '', 'Reach the goal'])
+            writer.writerow([now.strftime('%H:%M:%S'), 'Reach the goal'])
         f.close()
         
 class ErrorLogger(object):

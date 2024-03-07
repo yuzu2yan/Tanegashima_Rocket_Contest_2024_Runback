@@ -15,7 +15,7 @@ def process_frame(depth_buf: np.ndarray, amplitude_buf: np.ndarray) -> np.ndarra
     result_frame = depth_buf.astype(np.uint8)  & amplitude_buf.astype(np.uint8)
     return result_frame 
 
-def cal_distance_to_cone(cam, x, y, shape):
+def cal_distance_to_cone(cam, x, y, shape, folder_path=""):
     distance = 100
     x = int(x * 240 / shape[1])
     y = int(y * 180 / shape[0])

@@ -4,23 +4,27 @@
     
     Author : Yuzu
     Language : Python Ver.3.9.2
-    Last Update : 03/01/2024
+    Last Update : 03/07/2024
 """""""""""""""""""""""""""""""""""
 
 
-import sys
-sys.path.append('./sensors')
-sys.path.append('./floating/')
-import gnss
-import motor
-import ground
-import floating
-import img_proc
 import logger
 import time
 import datetime
 import csv
 import yaml
+import cv2
+import ArducamDepthCamera as ac
+from pycoral.adapters.common import input_size
+from pycoral.adapters.detect import get_objects
+from pycoral.utils.dataset import read_label_file
+from pycoral.utils.edgetpu import make_interpreter
+from pycoral.utils.edgetpu import run_inference
+from sensors import gnss
+from ground import motor
+from ground import ground
+from floating import floating
+from image_processing import cone_detection
 
 
 print("Hello World!!")
@@ -140,6 +144,23 @@ ground_log = logger.GroundLogger()
 ground_log.state = 'Normal'
 img_proc_log = logger.ImgProcLogger()
 
+cap = cv2.VideoCapture(1) # /dev/video1
+if cap.isOpened() == False:
+    print("Error opening video stream or file")
+interpreter = make_interpreter('../model/red_cone.tflite')
+interpreter.allocate_tensors()
+labels = read_label_file('../model/red_cone.txt')
+inference_size = input_size(interpreter)
+
+cam = ac.ArducamCamera()
+if cam.open(ac.TOFConnect.CSI,0) != 0 :
+    print("initialization failed")
+if cam.start(ac.TOFOutput.DEPTH) != 0 :
+    print("Failed to start camera")
+#cam.setControl(ac.TOFControl.RANG, MAX_DISTANCE=4)
+# cv2.namedWindow("preview", cv2.WINDOW_AUTOSIZE)
+    
+
 while not reach_goal:
     """
     Ground Phase
@@ -155,28 +176,27 @@ while not reach_goal:
         print("distance : ", distance)
         ground_log.ground_logger(data, distance)
         # Goal judgment
-        if distance <= 13 # Reach the goal within 13m
+        if distance <= 13: # Reach the goal within 13m
             print("Close to the goal")
-            drive.stop()
             ground_log.end_of_ground_phase()
             phase = 3
             break
         count = 0
         while data[3] != True: # Not heading the goal
-            if count > 7:
+            if count > 7 or distance <= 13:
                 break
-            # Check the stack and position when there are many position adjustments
             if data[4] == 'Turn Right':
                 drive.turn_right()
             elif data[4] == 'Turn Left':
                 drive.turn_left()
-            time.sleep(0.3)
+            time.sleep(0.5)
+            drive.forward()
             gps = gnss.read_GPSData()
             # The value used to check if the rover is heading towards the goal
             distance = ground.cal_distance(gps[0], gps[1], des[0], des[1])
             print("distance : ", distance)
-            data = ground.is_heading_goal(gps, des, pre_gps)
-            ground_log.ground_logger(data, distance, pre_gps, diff_distance)
+            data = ground.is_heading_goal(gps, des)
+            ground_log.ground_logger(data, distance)
             count += 1
         # End of Orientation Correction
         drive.forward()
@@ -187,18 +207,14 @@ while not reach_goal:
     """
     print("phase : ", phase)
     not_found = 0
-    while phase == 3:
-        
-        
-        
-        if img_name is not None:
-            try:
-                pre_p = p
-                cone_loc, proc_img_name, p = img_proc.detect_cone(img_name)
-                print("percentage of cone in img : ", p)
-            except Exception as e:
+    while phase == 3 and cap.isOpened():
+        drive.forward()
+        try:
+            percent, distance, cone_loc, ditected_img_name, tof_img_name = cone_detection.detect_cone(cap, cam, inference_size, interpreter, labels, folder_path)
+            img_proc_log.img_proc_logger(cone_loc, distance, percent, ditected_img_name, tof_img_name)
+            print("percent:", percent, "distance:", distance, "location:", cone_loc)
+        except Exception as e:
                 print("Error : Image processing failed")
-                error_img_proc = True
                 phase = 2
                 error_log.img_proc_error_logger(phase, distance=0)
                 with open('sys_error.csv', 'a') as f:
@@ -208,21 +224,8 @@ while not reach_goal:
                     f.close()
                 drive.stop()
                 break
-        else:
-            error_img_proc = True
-            phase = 2
-            print("Error : Failed to take a picture")
-            error_log.img_proc_error_logger(phase, distance=0)
-            drive.stop()
-            break
-        pre_gps = gps
-        gps = gnss.read_GPSData()
-        distance = ground.cal_distance(gps[0], gps[1], des[0], des[1])
-        print("distance :", distance)
-        diff_distance = ground.cal_distance(pre_gps[0], pre_gps[1], gps[0], gps[1])
-        img_proc_log.img_proc_logger(img_name, proc_img_name, cone_loc, p, distance, gps, pre_gps, diff_distance)
-        # Goal judgment(Supports too close to the goal)
-        if p > 0.12 or (pre_p - p >= 0.02 and cone_loc != "Not Found"):
+        # Goal judgment
+        if distance < 0.15:
             print("Reach the goal")
             phase = 4
             reach_goal = True
@@ -231,33 +234,24 @@ while not reach_goal:
             time.sleep(2.0)
             drive.stop()
             break
-        # The rover is far from the goal
-        if distance >= 15:
-            print('Error : The rover is far from the goal')
-            error_log.far_error_logger(phase, gps, distance)
-            drive.stop()
+        elif distance < 4:
+            drive.max_dutycycle = 65
+        if cone_loc == "right":
             drive.turn_right()
-            time.sleep(5)
-            drive.stop()
-        if cone_loc == "Front":
-            drive.forward()
-        elif cone_loc == "Right":
-            drive.turn_right()
-            time.sleep(1.5) if p < 0.01 else time.sleep(1)
-            drive.forward()
-        elif cone_loc == "Left":
+            time.sleep(0.5)
+        elif cone_loc == "left":
             drive.turn_left()
-            time.sleep(1.5) if p < 0.01 else time.sleep(1)
-            drive.forward()
-        else: # Not Found
+            time.sleep(0.5)
+        elif cone_loc == "not found":
             not_found += 1
-            if not_found >= 8:
-                print('Error : Cone not found')
-            drive.turn_right()
-            time.sleep(1.7)
+        if not_found >= 8:
+            print('Error : Cone not found')
             drive.stop()
-            continue
-        # Change the time to advance according to the proximity of the goal
-        time.sleep(4) if p < 0.01 else time.sleep(2)
-        stuck, diff_distance = ground.is_stuck(pre_gps, gps, data[13])
-        drive.stop()
+            phase = 2
+            break
+        
+
+cap.release()
+cam.stop()
+cam.close()
+cv2.destroyAllWindows()

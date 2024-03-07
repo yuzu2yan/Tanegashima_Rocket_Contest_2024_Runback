@@ -1,9 +1,9 @@
 import sys
 sys.path.append('./../sensors')
 sys.path.append('./../ground')
-import bme280
+from sensors import bme280
+from ground import motor
 import time
-import motor
 
 SEA_LEVEL_PRESSURE = 1013.25
 

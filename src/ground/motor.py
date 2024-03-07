@@ -12,19 +12,20 @@ PINS = FRONT + REAR + [SEPA_FIN, SEPA_RIN]
 class Motor(object):
     def __init__(self):
         Motor.pi = pigpio.pi()
+        self.max_dutycycle = 100
         for pin in PINS:
             Motor.pi.set_mode(pin, pigpio.OUTPUT)
             Motor.pi.set_PWM_frequency(pin, 10000)
             Motor.pi.set_PWM_range(pin, 100)
     
     def forward(self):
-        [Motor.pi.set_PWM_dutycycle(pin, 100) for pin in FRONT]
+        [Motor.pi.set_PWM_dutycycle(pin, self.max_dutycycle) for pin in FRONT]
         [Motor.pi.set_PWM_dutycycle(pin, 0) for pin in REAR]
         print("forward")
         
     def back(self):
         [Motor.pi.set_PWM_dutycycle(pin, 0) for pin in FRONT]
-        [Motor.pi.set_PWM_dutycycle(pin, 100) for pin in REAR]
+        [Motor.pi.set_PWM_dutycycle(pin, self.max_dutycycle) for pin in REAR]
         print("back")
     
     def stop(self):
@@ -32,25 +33,25 @@ class Motor(object):
         print("stop")
         
     def turn_right(self):
-        Motor.pi.set_PWM_dutycycle(FRONT[0], 70) # Left
-        Motor.pi.set_PWM_dutycycle(FRONT[1], 100) # Right
+        Motor.pi.set_PWM_dutycycle(FRONT[0], self.max_dutycycle * 0.7) # Left
+        Motor.pi.set_PWM_dutycycle(FRONT[1], self.max_dutycycle) # Right
         [Motor.pi.set_PWM_dutycycle(pin, 0) for pin in REAR]
         print("turn right")
     
     def turn_left(self):
-        Motor.pi.set_PWM_dutycycle(FRONT[0], 100) # Left
-        Motor.pi.set_PWM_dutycycle(FRONT[1], 70) # Right
+        Motor.pi.set_PWM_dutycycle(FRONT[0], self.max_dutycycle) # Left
+        Motor.pi.set_PWM_dutycycle(FRONT[1], self.max_dutycycle * 0.7) # Right
         [Motor.pi.set_PWM_dutycycle(pin, 0) for pin in REAR]
         print("turn left")
         
     def separate(self):
-        Motor.pi.set_PWM_dutycycle(SEPA_FIN, 100) 
+        Motor.pi.set_PWM_dutycycle(SEPA_FIN, 50) 
         Motor.pi.set_PWM_dutycycle(SEPA_RIN, 0)
         print("parachute separated")
                 
     def attach_para(self):
         Motor.pi.set_PWM_dutycycle(SEPA_FIN, 0) 
-        Motor.pi.set_PWM_dutycycle(SEPA_RIN, 100) 
+        Motor.pi.set_PWM_dutycycle(SEPA_RIN, 50) 
         print("parachute attached")
         
 
