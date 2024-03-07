@@ -23,7 +23,7 @@ def detect_cone(cap, cam, inference_size, interpreter, labels, folder_path="./")
         loc = "left"
     elif central_x > shape[1] * 2 / 3:
         loc = "right"
-    elif area == 0 or percent < 15:
+    elif percent < 15:
         loc = "not found"
     else:
         loc = "center"
