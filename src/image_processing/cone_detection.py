@@ -17,7 +17,7 @@ def detect_cone(cap, cam, inference_size, interpreter, labels, folder_path="./")
     frame = cv2.resize(frame, inference_size)
     run_inference(interpreter, frame.tobytes())
     cones = get_objects(interpreter, 0.1)[:1] # set threshold
-    detected_img, central_x, central_y, area, percent = append_objs_to_img(frame, inference_size, cones, labels)
+    detected_img, central_x, central_y, percent = append_objs_to_img(frame, inference_size, cones, labels)
     shape = detected_img.shape
     if central_x < shape[1] / 3:
         loc = "left"
