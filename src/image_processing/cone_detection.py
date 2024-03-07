@@ -33,7 +33,7 @@ def detect_cone(cap, cam, inference_size, interpreter, labels, folder_path="./")
         distance = cal_distance_to_cone(cam, central_x, central_y, detected_img.shape, folder_path)
     else:
         distance = 100
-    return percent, distance, loc, area
+    return percent, distance, loc
 
     
 def append_objs_to_img(img, inference_size, cones, labels):
