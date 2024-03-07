@@ -1,4 +1,5 @@
 import cv2
+import datetime 
 import numpy as np
 
 MAX_DISTANCE = 4
@@ -41,5 +42,8 @@ def cal_distance_to_cone(cam, x, y, shape, folder_path=""):
         cv2.rectangle(result_image,(start_x,start_y),(end_x,end_y),(128,128,128), 1)
         
         cv2.imshow("preview",result_image)
-        cv2.imwrite('result.jpg', result_image)
+        # cv2.imwrite('result.jpg', result_image)
+        now = datetime.datetime.now()
+        cv2.imwrite(now.strftime('%Y%m%d %H:%M:%S') + 'result_img.jpg', result_image) # 300x300
+    
     return distance

@@ -1,4 +1,5 @@
 import cv2
+import datetime
 import ArducamDepthCamera as ac
 from tof_distance import cal_distance_to_cone
 
@@ -28,7 +29,8 @@ def detect_cone(cap, cam, inference_size, interpreter, labels, folder_path="./")
     else:
         loc = "center"
     cv2.imshow('frame', detected_img)
-    cv2.imwrite('detected_img.jpg', detected_img) # 300x300
+    now = datetime.datetime.now()
+    cv2.imwrite(now.strftime('%Y%m%d %H:%M:%S') + 'detected_img.jpg', detected_img) # 300x300
     if len(cones) != 0 and percent > 15:
         distance = cal_distance_to_cone(cam, central_x, central_y, detected_img.shape, folder_path)
     else:
