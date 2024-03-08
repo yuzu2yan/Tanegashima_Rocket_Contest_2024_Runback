@@ -231,7 +231,7 @@ while not reach_goal:
                 drive.stop()
                 break
         # Goal judgment
-        if distance < 0.15:
+        if distance < 0.30:
             print("Reach the goal")
             phase = 4
             reach_goal = True
