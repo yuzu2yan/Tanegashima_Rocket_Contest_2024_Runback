@@ -30,7 +30,7 @@ def detect_cone(cap, cam, inference_size, interpreter, labels, folder_path="../d
         loc = "not found"
     else:
         loc = "center"
-    cv2.imshow('frame', detected_img)
+    # cv2.imshow('frame', detected_img)
     now = datetime.datetime.now()
     cv2.imwrite(folder_path + now.strftime('%Y%m%d %H:%M:%S') + 'detected_img.jpg', detected_img) # 300x300
     if len(cones) != 0 and percent > 15:
@@ -101,8 +101,8 @@ if __name__ == '__main__':
         elif loc == "left":
             drive.turn_left()
             time.sleep(0.3)
-        # elif loc == "not found":
-            # not_found += 1
+        elif loc == "not found":
+            drive.forward()
 
     cap.release()
     cam.stop()
