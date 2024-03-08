@@ -12,7 +12,7 @@ import motor
 import time
 
     
-def detect_cone(cap, cam, inference_size, interpreter, labels, folder_path="../../data/test/"):
+def detect_cone(cap, cam, inference_size, interpreter, labels, folder_path="../data/test/"):
     ret, frame = cap.read()
     if not ret:
         print('Cannot use camera1')
@@ -65,9 +65,9 @@ if __name__ == '__main__':
     cap = cv2.VideoCapture(1) # /dev/video1
     if cap.isOpened() == False:
         print("Error opening video stream or file")
-    interpreter = make_interpreter('../../model/red_cone.tflite')
+    interpreter = make_interpreter('../model/red_cone.tflite')
     interpreter.allocate_tensors()
-    labels = read_label_file('../../model/red_cone.txt')
+    labels = read_label_file('../model/red_cone.txt')
     inference_size = input_size(interpreter)
     
     cam = ac.ArducamCamera()
