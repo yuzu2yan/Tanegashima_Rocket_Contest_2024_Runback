@@ -21,11 +21,11 @@ from pycoral.adapters.detect import get_objects
 from pycoral.utils.dataset import read_label_file
 from pycoral.utils.edgetpu import make_interpreter
 from pycoral.utils.edgetpu import run_inference
-from sensors import gnss
-from ground_faze import motor
-from ground_faze import ground
-from floating_faze import floating
-from image_processing_faze import cone_detection
+import gnss
+import motor
+import ground
+import floating
+import cone_detection
 
 
 print("Hello World!!")

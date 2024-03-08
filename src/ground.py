@@ -1,7 +1,5 @@
-import sys
-sys.path.append('./../sensors')
-from sensors import bno055
-from sensors import gnss
+import bno055
+import gnss
 from geographiclib.geodesic import Geodesic 
 import math
 import time
@@ -9,7 +7,6 @@ import motor
 import numpy as np
 import datetime
 import csv
-import yaml
 
 
 def cal_azimuth(lng1, lat1, lng2, lat2):
@@ -68,9 +65,7 @@ def is_heading_goal(gps, des):
             return [des_ang, heading_ang, ang_diff, False, "Turn Right"] + gps + data
 
 # destination point(lon, lat)
-with open('settings.yaml') as yml:
-    settings = yaml.safe_load(yml)
-des = [settings['destination']['longitude'], settings['destination']['latitude']]
+des = [0,0]
 
 
 if __name__ == '__main__':
