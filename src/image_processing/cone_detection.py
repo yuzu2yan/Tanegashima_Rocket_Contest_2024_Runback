@@ -1,8 +1,8 @@
 import cv2
 import datetime
 import ArducamDepthCamera as ac
+import numpy as np
 from tof_distance import cal_distance_to_cone
-
 from pycoral.adapters.common import input_size
 from pycoral.adapters.detect import get_objects
 from pycoral.utils.dataset import read_label_file
@@ -34,7 +34,7 @@ def detect_cone(cap, cam, inference_size, interpreter, labels, folder_path="./")
     if len(cones) != 0 and percent > 15:
         distance = cal_distance_to_cone(cam, central_x, central_y, detected_img.shape, folder_path)
     else:
-        distance = 100
+        distance = np.nan
     return percent, distance, loc
 
     

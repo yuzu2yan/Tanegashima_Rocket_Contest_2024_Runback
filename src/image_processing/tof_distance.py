@@ -17,7 +17,7 @@ def process_frame(depth_buf: np.ndarray, amplitude_buf: np.ndarray) -> np.ndarra
     return result_frame 
 
 def cal_distance_to_cone(cam, x, y, shape, folder_path=""):
-    distance = 100
+    distance = np.nan
     x = int(x * 240 / shape[1])
     y = int(y * 180 / shape[0])
     start_x = x - 4 if x - 4 > 0 else 0
@@ -44,6 +44,6 @@ def cal_distance_to_cone(cam, x, y, shape, folder_path=""):
         cv2.imshow("preview",result_image)
         # cv2.imwrite('result.jpg', result_image)
         now = datetime.datetime.now()
-        cv2.imwrite(now.strftime('%Y%m%d %H:%M:%S') + 'result_img.jpg', result_image) # 300x300
+        cv2.imwrite(now.strftime('%Y%m%d %H:%M:%S') + 'tof_img.jpg', result_image) # 300x300
     
     return distance

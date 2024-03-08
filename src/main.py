@@ -8,6 +8,7 @@
 """""""""""""""""""""""""""""""""""
 
 
+import os
 import logger
 import time
 import datetime
@@ -28,7 +29,11 @@ from image_processing import cone_detection
 
 
 print("Hello World!!")
-error_log = logger.ErrorLogger()
+now = datetime.datetime.now()
+directory_path = "./../data/" + now.strftime('%Y%m%d %H:%M:%S')
+if not os.path.exists(directory_path):
+    os.makedirs(directory_path)
+error_log = logger.ErrorLogger(directory_path)
 drive = motor.Motor()
 drive.stop()
 # destination point(lon, lat)
@@ -50,7 +55,7 @@ Floating Phase
 phase = 1
 if phase == 1:
     print("phase : ", phase)
-    floating_log = logger.FloatingLogger()
+    floating_log = logger.FloatingLogger(directory_path)
     """
     state 
         Rising
@@ -140,9 +145,9 @@ time.sleep(3)
 drive.stop()
 reach_goal = False
 phase = 2
-ground_log = logger.GroundLogger()
+ground_log = logger.GroundLogger(directory_path)
 ground_log.state = 'Normal'
-img_proc_log = logger.ImgProcLogger()
+img_proc_log = logger.ImgProcLogger(directory_path)
 
 cap = cv2.VideoCapture(1) # /dev/video1
 if cap.isOpened() == False:
@@ -160,7 +165,7 @@ if cam.start(ac.TOFOutput.DEPTH) != 0 :
 #cam.setControl(ac.TOFControl.RANG, MAX_DISTANCE=4)
 # cv2.namedWindow("preview", cv2.WINDOW_AUTOSIZE)
     
-
+g
 while not reach_goal:
     """
     Ground Phase
@@ -189,7 +194,7 @@ while not reach_goal:
                 drive.turn_right()
             elif data[4] == 'Turn Left':
                 drive.turn_left()
-            time.sleep(0.5)
+            time.sleep(0.3)
             drive.forward()
             gps = gnss.read_GPSData()
             # The value used to check if the rover is heading towards the goal
@@ -210,12 +215,13 @@ while not reach_goal:
     while phase == 3 and cap.isOpened():
         drive.forward()
         try:
-            percent, distance, cone_loc, ditected_img_name, tof_img_name = cone_detection.detect_cone(cap, cam, inference_size, interpreter, labels, folder_path)
+            percent, distance, cone_loc, ditected_img_name, tof_img_name = cone_detection.detect_cone(cap, cam, inference_size, interpreter, labels, directory_path)
             img_proc_log.img_proc_logger(cone_loc, distance, percent, ditected_img_name, tof_img_name)
             print("percent:", percent, "distance:", distance, "location:", cone_loc)
         except Exception as e:
                 print("Error : Image processing failed")
-                phase = 2
+                phase = 4
+                reach_goal = True
                 error_log.img_proc_error_logger(phase, distance=0)
                 with open('sys_error.csv', 'a') as f:
                     now = datetime.datetime.now()
@@ -238,13 +244,13 @@ while not reach_goal:
             drive.max_dutycycle = 65
         if cone_loc == "right":
             drive.turn_right()
-            time.sleep(0.5)
+            time.sleep(0.3)
         elif cone_loc == "left":
             drive.turn_left()
-            time.sleep(0.5)
+            time.sleep(0.3)
         elif cone_loc == "not found":
             not_found += 1
-        if not_found >= 8:
+        if not_found >= 10:
             print('Error : Cone not found')
             drive.stop()
             phase = 2
