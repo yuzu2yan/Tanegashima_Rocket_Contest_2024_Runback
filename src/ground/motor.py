@@ -3,9 +3,9 @@ import time
 import numpy as np
 
 # pigpio library : https://abyz.me.uk/rpi/pigpio/python.html
-FRONT = [17, 23] # Left, Right
-REAR = [10, 24] # Left, Right
-SEPA_FIN = 11
+FRONT = [17, 13] # Left, Right
+REAR = [27, 22] # Left, Right
+SEPA_FIN = 19
 SEPA_RIN = 16
 PINS = FRONT + REAR + [SEPA_FIN, SEPA_RIN]
 
