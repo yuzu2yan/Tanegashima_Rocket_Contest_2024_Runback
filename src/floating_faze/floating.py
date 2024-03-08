@@ -1,8 +1,8 @@
 import sys
 sys.path.append('./../sensors')
-sys.path.append('./../ground')
+sys.path.append('./../ground_faze')
 from sensors import bme280
-from ground import motor
+from ground_faze import motor
 import time
 
 SEA_LEVEL_PRESSURE = 1013.25
@@ -47,4 +47,4 @@ if __name__ == '__main__':
             if altitude <= 3:
                 state = 'Landing'
             time.sleep(0.1)
-        drive.servo() # Separation mechanism activated
+        drive.separate() # Separation mechanism activated

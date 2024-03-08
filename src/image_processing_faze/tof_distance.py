@@ -16,7 +16,7 @@ def process_frame(depth_buf: np.ndarray, amplitude_buf: np.ndarray) -> np.ndarra
     result_frame = depth_buf.astype(np.uint8)  & amplitude_buf.astype(np.uint8)
     return result_frame 
 
-def cal_distance_to_cone(cam, x, y, shape, folder_path=""):
+def cal_distance_to_cone(cam, x, y, shape, folder_path="./../../data/test/"):
     distance = np.nan
     x = int(x * 240 / shape[1])
     y = int(y * 180 / shape[0])
@@ -41,9 +41,9 @@ def cal_distance_to_cone(cam, x, y, shape, folder_path=""):
         result_image = cv2.applyColorMap(result_image, cv2.COLORMAP_JET)
         cv2.rectangle(result_image,(start_x,start_y),(end_x,end_y),(128,128,128), 1)
         
-        cv2.imshow("preview",result_image)
+        # cv2.imshow("preview",result_image)
         # cv2.imwrite('result.jpg', result_image)
         now = datetime.datetime.now()
-        cv2.imwrite(now.strftime('%Y%m%d %H:%M:%S') + 'tof_img.jpg', result_image) # 300x300
+        cv2.imwrite(folder_path + now.strftime('%Y%m%d %H:%M:%S') + 'tof_img.jpg', result_image) # 300x300
     
     return distance

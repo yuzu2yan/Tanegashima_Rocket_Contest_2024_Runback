@@ -8,9 +8,13 @@ from pycoral.adapters.detect import get_objects
 from pycoral.utils.dataset import read_label_file
 from pycoral.utils.edgetpu import make_interpreter
 from pycoral.utils.edgetpu import run_inference
+import sys
+sys.append.path('./../ground_faze/')
+from ground_faze import motor
+import time
 
     
-def detect_cone(cap, cam, inference_size, interpreter, labels, folder_path="./"):
+def detect_cone(cap, cam, inference_size, interpreter, labels, folder_path="../../data/test/"):
     ret, frame = cap.read()
     if not ret:
         print('Cannot use camera1')
@@ -30,7 +34,7 @@ def detect_cone(cap, cam, inference_size, interpreter, labels, folder_path="./")
         loc = "center"
     cv2.imshow('frame', detected_img)
     now = datetime.datetime.now()
-    cv2.imwrite(now.strftime('%Y%m%d %H:%M:%S') + 'detected_img.jpg', detected_img) # 300x300
+    cv2.imwrite(folder_path + now.strftime('%Y%m%d %H:%M:%S') + 'detected_img.jpg', detected_img) # 300x300
     if len(cones) != 0 and percent > 15:
         distance = cal_distance_to_cone(cam, central_x, central_y, detected_img.shape, folder_path)
     else:
@@ -74,13 +78,33 @@ if __name__ == '__main__':
     if cam.start(ac.TOFOutput.DEPTH) != 0 :
         print("Failed to start camera")
     #cam.setControl(ac.TOFControl.RANG, MAX_DISTANCE=4)
-    cv2.namedWindow("preview", cv2.WINDOW_AUTOSIZE)
-    
+    # cv2.namedWindow("preview", cv2.WINDOW_AUTOSIZE)
+    drive = motor.Motor()
     while cap.isOpened():
         percent, distance, loc = detect_cone(cap, cam, inference_size, interpreter, labels, folder_path="./")
         print("percent:", percent, "distance:", distance, "location:", loc)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #     break
+        # Goal judgment
+        if distance < 0.30:
+            print("Reach the goal")
+            # phase = 4
+            # reach_goal = True
+            # img_proc_log.end_of_img_proc_phase()
+            drive.forward()
+            time.sleep(2.0)
+            drive.stop()
             break
+        elif distance < 4:
+            drive.max_dutycycle = 65
+        if loc == "right":
+            drive.turn_right()
+            time.sleep(0.3)
+        elif loc == "left":
+            drive.turn_left()
+            time.sleep(0.3)
+        # elif loc == "not found":
+            # not_found += 1
 
     cap.release()
     cam.stop()
