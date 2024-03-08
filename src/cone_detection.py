@@ -59,7 +59,7 @@ def append_objs_to_img(img, inference_size, cones, labels):
         img = cv2.putText(img, label, (x0, y0+30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 2)
         return img, central_x, central_y, percent
     else:
-        return img, 0, 0, 0
+        return img, np.nan, np.nan, 0
 
 if __name__ == '__main__':
     cap = cv2.VideoCapture(1) # /dev/video1
