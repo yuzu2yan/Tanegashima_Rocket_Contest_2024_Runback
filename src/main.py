@@ -52,7 +52,7 @@ phase 1 : Floating
 """
 Floating Phase
 """
-phase = 1
+phase = 2 # TODO change
 if phase == 1:
     print("phase : ", phase)
     floating_log = logger.FloatingLogger(directory_path)
@@ -78,7 +78,6 @@ if phase == 1:
 while phase == 1:
     while state == 'Rising':
         data = floating.cal_altitude(init_altitude)
-        pre_altitude = altitude
         altitude = data[2]
         floating_log.floating_logger(data)
         print("Rising")
@@ -106,7 +105,6 @@ while phase == 1:
         time.sleep(1.5)
     while state == 'Ascent Completed':
         data = floating.cal_altitude(init_altitude)
-        pre_altitude = altitude
         altitude = data[2]
         floating_log.floating_logger(data)
         print("Falling")
@@ -136,10 +134,10 @@ while phase == 1:
             break
         time.sleep(1)
     print("Landing")
-    drive.separate() # Separation mechanism activated
     break
 
 
+drive.separate() # Separation mechanism activated
 drive.forward()
 time.sleep(3)
 drive.stop()
@@ -165,7 +163,7 @@ if cam.start(ac.TOFOutput.DEPTH) != 0 :
 #cam.setControl(ac.TOFControl.RANG, MAX_DISTANCE=4)
 # cv2.namedWindow("preview", cv2.WINDOW_AUTOSIZE)
     
-g
+
 while not reach_goal:
     """
     Ground Phase
@@ -231,17 +229,17 @@ while not reach_goal:
                 drive.stop()
                 break
         # Goal judgment
-        if distance < 0.30:
+        if distance < 0.37:
             print("Reach the goal")
             phase = 4
             reach_goal = True
             img_proc_log.end_of_img_proc_phase()
             drive.forward()
-            time.sleep(2.0)
+            time.sleep(3)
             drive.stop()
             break
         elif distance < 4:
-            drive.max_dutycycle = 65
+            drive.max_dutyrate = 0.65
         if cone_loc == "right":
             drive.turn_right()
             time.sleep(0.3)
