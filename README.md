@@ -17,6 +17,16 @@ The drone is dropped from 30 m above the ground, decelerated by a parachute, and
 ## Mission Sequence  
 The program starts when the carrier is loaded, and judges the ascent and landing by the air pressure sensor. In case of a sensor error, the landing judgment is also made over time. After landing, the separation mechanism is activated, and the CanSat uses the geomagnetic sensor and GPS to reach the goal. After approaching the goal, the camera starts image processing and distance measurement, and the program terminates when it judges that the goal has been reached.
 
+
+## Success Criteria  
+
+| | Statement | Methodology |
+| ---- | ---- |---|
+| Minimum Success |- Parachute separation at 2m altitude <br> - Landing without damage|Confirmation by visual inspection and log|
+| Full Success |Zero-distance goal|Confirmation by visual inspection and log|
+| Extra Success |Mission accomplishment within 3 minutes|Timer and log|
+
+
 ## Feature
 ### Impact resistance due to bearings
 
@@ -35,14 +45,6 @@ The TPU accelerator allows for 30 object detections per second and goal detectio
 <img width="400" alt="tof_camera" src="https://raw.github.com/wiki/yuzu2yan/Tanegashima_Rocket_Contest_2024_Runback/images/tof.gif">
 
 The position of the detected object can be transferred to the image acquired by the ToF camera to measure the distance to that point.  This allows for an accurate 0-distance goal.
-
-## Success Criteria  
-
-| | Statement | Methodology |
-| ---- | ---- |---|
-| Minimum Success |- Parachute separation at 2m altitude <br> - Landing without damage|Confirmation by visual inspection and log|
-| Full Success |Zero-distance goal|Confirmation by visual inspection and log|
-| Extra Success |Mission accomplishment within 3 minutes|Timer and log|
 
 
 ## Software Configuration
