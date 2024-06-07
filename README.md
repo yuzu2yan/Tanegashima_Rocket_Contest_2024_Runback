@@ -57,7 +57,7 @@ Tensorflow: Ver.2.15.0
 
 ## Hardware Configuration
 
-Computer                   : Raspberry pi4  
+Computer                   : Raspberry Pi4  
 GPS                        : GYSFDMAXB  
 9-axis sensor              : BNO055  
 Barometric pressure sensor : BME280   
