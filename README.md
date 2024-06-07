@@ -27,7 +27,7 @@ The program starts when the carrier is loaded, and judges the ascent and landing
 | Extra Success |Mission accomplishment within 3 minutes|Timer and log|
 
 
-## Feature
+## Features
 ### Impact resistance due to bearings
 
 <img width="400" alt="bearing" src="https://github.com/yuzu2yan/Tanegashima_Rocket_Contest_2024_Runback/assets/89567103/3c9b37c9-6141-4e8a-b578-ee44be46fc68">
