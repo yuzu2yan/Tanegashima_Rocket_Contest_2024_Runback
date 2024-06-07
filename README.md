@@ -12,7 +12,7 @@ This is a project of Team Astrum, CanSat and Runback Division of Tanegashima Roc
 <img width="400px" alt="intro_img" src="https://github.com/yuzu2yan/Tanegashima_Rocket_Contest_2024_Runback/assets/89567103/f631ac84-81dd-41cf-8d86-e2352d85866c">
 
 ## Mission  
-The drone is dropped from 30 m above the ground, decelerated by a parachute, and lands on the ground. The drone aims for a zero-distance goal to a pylon placed at the goal point under autonomous control.  
+The crane is dropped from 30 m above the ground, decelerated by a parachute, and lands on the ground. The drone aims for a zero-distance goal to a pylon placed at the goal point under autonomous control.  
   
 ## Mission Sequence  
 The program starts when the carrier is loaded, and judges the ascent and landing by the air pressure sensor. In case of a sensor error, the landing judgment is also made over time. After landing, the separation mechanism is activated, and the CanSat uses the geomagnetic sensor and GPS to reach the goal. After approaching the goal, the camera starts image processing and distance measurement, and the program terminates when it judges that the goal has been reached.
