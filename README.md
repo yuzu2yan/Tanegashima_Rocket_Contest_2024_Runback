@@ -1,5 +1,5 @@
 # Tanegashima_Rocket_Contest_2024_Runback
-![release_date](https://img.shields.io/badge/release_date-May_2024-yellow)
+![release_date](https://img.shields.io/badge/release_date-Mar_2024-yellow)
 [![python](https://img.shields.io/badge/python-v3.9.2-blue)](https://www.python.org/downloads/release/python-392/)
 [![openCV](https://img.shields.io/badge/OpenCV-v4.7.0-blue)](https://docs.opencv.org/4.7.0/)
 ![linux11](https://img.shields.io/badge/os-linux11-blue)  
