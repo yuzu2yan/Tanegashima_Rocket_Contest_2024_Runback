@@ -9,12 +9,11 @@
 
 This is a project of Team Astrum, CanSat and Runback Division of Tanegashima Rocket Contest 2024. 
 
-<img width="400" alt="" src="https://github.com/yuzu2yan/Tanegashima_Rocket_Contest_2024_Runback/assets/89567103/f631ac84-81dd-41cf-8d86-e2352d85866c">
+<img width="400px" alt="" src="https://github.com/yuzu2yan/Tanegashima_Rocket_Contest_2024_Runback/assets/89567103/f631ac84-81dd-41cf-8d86-e2352d85866c">
 
-![Picture1](https://github.com/yuzu2yan/Tanegashima_Rocket_Contest_2024_Runback/assets/89567103/52132cd1-d27e-4464-9b4a-5656f9d3ccce)
+<img width="400" alt="" src="https://raw.github.com/wiki/yuzu2yan/Tanegashima_Rocket_Contest_2024_Runback/images/detection.gif">
 
-![Picture2](https://github.com/yuzu2yan/Tanegashima_Rocket_Contest_2024_Runback/assets/89567103/d0a100b8-f92d-4516-88f9-01ae93813a37)
-
+![demo](https://raw.github.com/wiki/yuzu2yan/Tanegashima_Rocket_Contest_2024_Runback/images/detection.gif)
 
 ## Mission  
 The drone is dropped from 30 m above the ground, decelerated by a parachute, and lands on the ground. The drone aims for a zero-distance goal to a pylon placed at the goal point under autonomous control.  
@@ -84,4 +83,5 @@ Motor Driver               : BD6231F
 ## Result
 It was retired due to a damaged circuit board before the drop.
 
+<img witdh="400px" alt="" src="https://github.com/yuzu2yan/Tanegashima_Rocket_Contest_2024_Runback/assets/89567103/8ef6777b-da15-459b-8ad7-a3177bff7803">
 
