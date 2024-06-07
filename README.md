@@ -85,7 +85,7 @@ Motor Driver               : BD6231F
     Obtain barometric pressure and acceleration data from BNO055. Each value is automatically calibrated by the built-in microcomputer, and the degree of calibration can be checked.
 - cone_detection.py  
     It is an image processing module that takes a picture and detects red pylons in real time from the image.
-- tof_distance.py
+- tof_distance.py  
       Measure the position and distance to the red cone using a ToF camera.
 - motor.py  
     This class deals with motors, controlling tires and deployment motors.
