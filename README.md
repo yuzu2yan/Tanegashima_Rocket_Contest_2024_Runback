@@ -9,6 +9,12 @@
 
 This is a project of Team Astrum, CanSat and Runback Division of Tanegashima Rocket Contest 2024. 
 
+<img width="400" alt="" src="https://github.com/yuzu2yan/Tanegashima_Rocket_Contest_2024_Runback/assets/89567103/f631ac84-81dd-41cf-8d86-e2352d85866c">
+
+![Picture1](https://github.com/yuzu2yan/Tanegashima_Rocket_Contest_2024_Runback/assets/89567103/52132cd1-d27e-4464-9b4a-5656f9d3ccce)
+
+![Picture2](https://github.com/yuzu2yan/Tanegashima_Rocket_Contest_2024_Runback/assets/89567103/d0a100b8-f92d-4516-88f9-01ae93813a37)
+
 
 ## Mission  
 The drone is dropped from 30 m above the ground, decelerated by a parachute, and lands on the ground. The drone aims for a zero-distance goal to a pylon placed at the goal point under autonomous control.  
@@ -17,6 +23,10 @@ The drone is dropped from 30 m above the ground, decelerated by a parachute, and
 The program starts when the carrier is loaded, and judges the ascent and landing by the air pressure sensor. In case of a sensor error, the landing judgment is also made over time. After landing, the separation mechanism is activated, and the CanSat uses the geomagnetic sensor and GPS to reach the goal. After approaching the goal, the camera starts image processing and distance measurement, and the program terminates when it judges that the goal has been reached.
 
 ## Feature
+<img width="400" alt="feature" src="https://github.com/yuzu2yan/Tanegashima_Rocket_Contest_2024_Runback/assets/89567103/3c9b37c9-6141-4e8a-b578-ee44be46fc68">
+
+
+
 
 
 ## Success Criteria  
@@ -60,16 +70,18 @@ Motor Driver               : BD6231F
     This program is used in the ground phase. It calculates the distance and angle to the goal based on geomagnetic and GPS information, and determines the control.
 - bme280.py  
     Obtain air pressure and temperature data using BME280.
-- GYSFDMAXB.py  
+- gnss.py  
     Obtains latitude and longitude from a GPS module every second. The acquisition program runs as a daemon.
 - bno055.py  
     Obtain barometric pressure and acceleration data from BNO055. Each value is automatically calibrated by the built-in microcomputer, and the degree of calibration can be checked.
-- img_proc.py  
-    画像処理のモジュールであり，写真を撮って，得られた画像の色情報から赤いパイロンを検出する.
+- cone_detection.py  
+    It is an image processing module that takes a picture and detects red pylons in real time from the image.
+- tof_distance.py
+      Measure the position and distance to the red cone using a ToF camera.
 - motor.py  
     This class deals with motors, controlling tires and deployment motors.
 
 ## Result
 It was retired due to a damaged circuit board before the drop.
 
-<img src="https://github.com/Yuzudayo/Noshiro_Space_Event_2023/assets/89567103/a80d2084-e960-4618-b798-29e2f6f43e80" width=380px>
+
